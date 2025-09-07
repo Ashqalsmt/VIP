@@ -22,7 +22,6 @@ exts = ["jpg", "png", "webp", "webm", "m4a", "mp4", "mp3", "tgs"]
 cmds = [
     "rm -rf downloads",
     "mkdir downloads",
-    "rm -rf SESION_REFZ_BOT.session",
 ]
 # ========================================================================
 
