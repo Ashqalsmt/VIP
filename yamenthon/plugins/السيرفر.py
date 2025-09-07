@@ -72,34 +72,37 @@ async def variable(event):
             "𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻" f"\n\n**⌔∮الفـار :** -> {variable} **غيـر موجود**❌"
         )
     elif cmd == "ضع":
-        variable = "".join(event.text.split(maxsplit=2)[2:])
-        cat = await edit_or_reply(event, "**⌔∮جـارِ إعـداد المعلومـات . . .**")
-        if not variable:
-            return await cat.edit("**⌔∮** `.ضع الفار ` **<اسـم الفـار> <القيمـه>**")
-        value = "".join(variable.split(maxsplit=1)[1:])
-        variable = "".join(variable.split(maxsplit=1)[0])
-        if variable not in var_checker:
-            value = f"'{value}'"
-        if not value:
-            return await cat.edit("**⌔∮** `.ضع الفار ` **<اسـم الفـار> <القيمـه>**")
-        await asyncio.sleep(1)
-        for i in configs:
-            if variable in i:
-                string += f"    {variable} = {value}\n"
-                match = True
-            else:
-                string += f"{i}"
-        if match:
-            await cat.edit(f"**- تم تغيـر** `{variable}` **:**\n **- المتغيـر :** `{value}` \n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**")
-        else:
+    variable = "".join(event.text.split(maxsplit=2)[2:])
+    cat = await edit_or_reply(event, "**⌔∮جـارِ إعـداد المعلومـات . . .**")
+    if not variable:
+        return await cat.edit("**⌔∮** `.ضع الفار ` **<اسـم الفـار> <القيمـه>**")
+    value = "".join(variable.split(maxsplit=1)[1:])
+    variable = "".join(variable.split(maxsplit=1)[0])
+    if variable not in var_checker:
+        value = f"'{value}'"
+    if not value:
+        return await cat.edit("**⌔∮** `.ضع الفار ` **<اسـم الفـار> <القيمـه>**")
+    await asyncio.sleep(1)
+    for i in configs:
+        if variable in i:
             string += f"    {variable} = {value}\n"
-            await cat.edit(
-                f"**- تم إضـافـة** `{variable}` **:**\n **- المضـاف اليـه :** `{value}` \n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**"
-            )
-        with open(config, "w") as f1:
-            f1.write(string)
-            f1.close()
-        await event.client.reload(cat)
+            match = True
+        else:
+            string += f"{i}"
+    if match:
+        await cat.edit(f"**- تم تغيـر** `{variable}` **:**\n **- المتغيـر :** `{value}` \n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**")
+    else:
+        string += f"    {variable} = {value}\n"
+        await cat.edit(
+            f"**- تم إضـافـة** `{variable}` **:**\n **- المضـاف اليـه :** `{value}` \n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**"
+        )
+    with open(config, "w") as f1:
+        f1.write(string)
+        
+    if os.path.exists("SESION_REFZ_BOT.session"):
+        os.remove("SESION_REFZ_BOT.session")
+
+    await event.client.reload(cat)
     if cmd == "حذف":
         cat = await edit_or_reply(event, "**⌔∮جـارِ الحصول على معلومات لحذف المتغير الفـار من السيـرفـر ...**")
         await asyncio.sleep(1)
