@@ -3,20 +3,17 @@ import glob
 import os
 
 from . import zedub
-
 from ..core.managers import edit_delete, edit_or_reply
 from ..helpers.utils import _zedutils
 from . import BOTLOG, BOTLOG_CHATID, mention
 
 plugin_category = "الادوات"
-##########
 
 # قاموس التحويل من الاسماء المبسطة إلى الفارات الفعلية
 var_yamenthon = {
     "البوت": "TG_BOT_TOKEN",
 }
 
-#########
 config = "./config.py"
 var_checker = [
     "APP_ID",
@@ -30,8 +27,8 @@ cmds = [
     "rm -rf downloads",
     "mkdir downloads",
 ]
-# ========================================================================
 
+# ========================================================================
 
 @zedub.zed_cmd(
     pattern="(ضع|جلب|حذف) فار ([\\s\\S]*)",
@@ -59,14 +56,19 @@ async def variable(event):
     """
     if not os.path.exists(config):
         return await edit_delete(
-            event, "**- عـذراً .. لايـوجـد هنـالك ملـف كـونفـج 📁🖇**\n\n**- هـذه الاوامـر خـاصـة فقـط بالمنصبيـن ع السيـرفـر 📟💡**"
+            event,
+            "**- عـذراً .. لايـوجـد هنـالك ملـف كـونفـج 📁🖇**\n\n"
+            "**- هـذه الاوامـر خـاصـة فقـط بالمنصبيـن ع السيـرفـر 📟💡**"
         )
+
     cmd = event.pattern_match.group(1)
     string = ""
     match = None
+
     with open(config, "r") as f:
         configs = f.readlines()
-    
+
+    # ===== جلب فار =====
     if cmd == "جلب":
         cat = await edit_or_reply(event, "**⌔∮ جاري الحصول على المعلومات. **")
         await asyncio.sleep(1)
@@ -74,11 +76,18 @@ async def variable(event):
         for i in configs:
             if variable in i:
                 _, val = i.split("= ")
-                return await cat.edit("𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻" f"\n\n**⌔∮الفـار** `{variable} = {val}`")
+                return await cat.edit(
+                    "𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n"
+                    "𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻"
+                    f"\n\n**⌔∮الفـار** `{variable} = {val}`"
+                )
         await cat.edit(
-            "𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻" f"\n\n**⌔∮الفـار :** -> {variable} **غيـر موجود**❌"
+            "𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n"
+            "𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻"
+            f"\n\n**⌔∮الفـار :** -> {variable} **غيـر موجود**❌"
         )
-    
+
+    # ===== ضع فار =====
     elif cmd == "ضع":
         user_input = "".join(event.text.split(maxsplit=2)[2:])
         cat = await edit_or_reply(event, "**⌔∮جـارِ إعـداد المعلومـات . . .**")
@@ -86,42 +95,57 @@ async def variable(event):
             return await cat.edit("**⌔∮** `.ضع فار ` **<اسـم الفـار> <القيمـه>**")
 
         # أول جزء هو اسم فار (بالعربي أو الانجليزي)
-        parts = user_input.split(maxsplit=1)
-        variable = parts[0]
-        value = parts[1] if len(parts) > 1 else ""
+        variable = "".join(user_input.split(maxsplit=1)[0])
+        # ثاني جزء هو القيمة
+        value = "".join(user_input.split(maxsplit=1)[1:])
 
         # تحويل الاسم إذا كان مبسط
         variable = var_yamenthon.get(variable, variable)
 
         if variable not in var_checker:
             value = f"'{value}'"
-            if not value or value == "''":
+            if not value:
                 return await cat.edit("**⌔∮** `.ضع فار ` **<اسـم الفـار> <القيمـه>**")
-            await asyncio.sleep(1)
-            match = False
-            for i in configs:
-                if variable in i:
-                    string += f"    {variable} = {value}\n"
-                    match = True
-                else:
-                    string += f"{i}"
-            if match:
-                await cat.edit(f"**- تم تغيـر** `{variable}` **:**\n **- المتغيـر :** `{value}` \n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 5-8 دقيقـه ▬▭ ...**")
-            else:
-                string += f"    {variable} = {value}\n"
-                await cat.edit(
-                    f"**- تم إضـافـة** `{variable}` **:**\n **- المضـاف اليـه :** `{value}` \n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 5-8 دقيقـه ▬▭ ...**"
-                )
-            with open(config, "w") as f1:
-                f1.write(string)
-            
-            if os.path.exists("SESION_REFZ_BOT.session"):
-                os.remove("SESION_REFZ_BOT.session")
 
-            await event.client.reload()
-    
+        await asyncio.sleep(1)
+        match = False
+        for i in configs:
+            if variable in i:
+                string += f"    {variable} = {value}\n"
+                match = True
+            else:
+                string += f"{i}"
+
+        if match:
+            await cat.edit(
+                f"**- تم تغيـر** `{variable}` **:**\n"
+                f" **- المتغيـر :** `{value}` \n"
+                "**- يتم الان اعـادة تشغيـل بـوت يمن ثون "
+                "يستغـرق الامر 5-8 دقيقـه ▬▭ ...**"
+            )
+        else:
+            string += f"    {variable} = {value}\n"
+            await cat.edit(
+                f"**- تم إضـافـة** `{variable}` **:**\n"
+                f" **- المضـاف اليـه :** `{value}` \n"
+                "**- يتم الان اعـادة تشغيـل بـوت يمن ثون "
+                "يستغـرق الامر 5-8 دقيقـه ▬▭ ...**"
+            )
+
+        with open(config, "w") as f1:
+            f1.write(string)
+
+        if os.path.exists("SESION_REFZ_BOT.session"):
+            os.remove("SESION_REFZ_BOT.session")
+
+        await event.client.reload(cat)
+
+    # ===== حذف فار =====
     elif cmd == "حذف":
-        cat = await edit_or_reply(event, "**⌔∮جـارِ الحصول على معلومات لحذف المتغير الفـار من السيـرفـر ...**")
+        cat = await edit_or_reply(
+            event,
+            "**⌔∮جـارِ الحصول على معلومات لحذف المتغير الفـار من السيـرفـر ...**"
+        )
         await asyncio.sleep(1)
         variable = event.pattern_match.group(2).split()[0]
         match = False
@@ -131,16 +155,26 @@ async def variable(event):
                 match = True
             else:
                 string += f"{i}"
+
         with open(config, "w") as f1:
             f1.write(string)
+
         if match:
-            await cat.edit(f"**- الفـار** `{variable}`  **تم حذفه بنجاح. \n\n**- يتم الان اعـادة تشغيـل بـوت يمن ثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**")
+            await cat.edit(
+                f"**- الفـار** `{variable}`  **تم حذفه بنجاح.**\n\n"
+                "**- يتم الان اعـادة تشغيـل بـوت يمن ثون "
+                "يستغـرق الامر 2-1 دقيقـه ▬▭ ...**"
+            )
         else:
             await cat.edit(
-                "𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻" f"\n\n**⌔∮الفـار :** -> {variable} **غيـر موجود**❌"
+                "𓆩 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - 𝗖𝗼𝗻𝗳𝗶𝗴 𝗩𝗮𝗿𝘀 𓆪\n"
+                "𓍹ⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧⵧ𓍻"
+                f"\n\n**⌔∮الفـار :** -> {variable} **غيـر موجود**❌"
             )
-        await event.client.reload()
 
+        await event.client.reload(cat)
+
+# ========================================================================
 
 @zedub.zed_cmd(
     pattern="(ري|كلين) لود$",
@@ -163,7 +197,8 @@ async def _(event):
     zed = await edit_or_reply(
         event,
         f"**⌔∮ اهـلا عـزيـزي** - {mention}\n\n"
-        f"**⌔∮ يتـم الان اعـادة تشغيـل بـوت يمنثون  فـي السيـرفـر قـد يستغـرق الامـر 2-3 دقيقـه ▬▭ ...**",
+        f"**⌔∮ يتـم الان اعـادة تشغيـل بـوت يمنثون "
+        f"فـي السيـرفـر قـد يستغـرق الامـر 2-3 دقيقـه ▬▭ ...**",
     )
     if cmd == "كلين":
         for file in exts:
@@ -172,4 +207,5 @@ async def _(event):
                 os.remove(i)
         for i in cmds:
             await _zedutils.runcmd(i)
-    await event.client.reload()
+
+    await event.client.reload(zed)
