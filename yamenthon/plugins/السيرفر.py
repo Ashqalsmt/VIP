@@ -150,4 +150,10 @@ async def _(event):
                 os.remove(i)
         for i in cmds:
             await _zedutils.runcmd(i)
-    await event.client.reload(zed)
+         # حذف جلسة البوت لإعادة إنشاء جديدة
+    session_file = "SESION_REFZ_BOT.session"
+    if os.path.exists(session_file):
+        os.remove(session_file)
+
+    # إعادة التشغيل (reload)
+    await event.client.reload(zed)       
