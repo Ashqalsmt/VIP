@@ -22,6 +22,7 @@ exts = ["jpg", "png", "webp", "webm", "m4a", "mp4", "mp3", "tgs"]
 cmds = [
     "rm -rf downloads",
     "mkdir downloads",
+    "SESION_REFZ_BOT.session",
 ]
 # ========================================================================
 
@@ -150,11 +151,4 @@ async def _(event):
                 os.remove(i)
         for i in cmds:
             await _zedutils.runcmd(i)
-
-    # حذف جلسة البوت لإعادة إنشاء جديدة
-    session_file = "./SESION_REFZ_BOT.session"
-    if os.path.exists(session_file):
-        os.remove(session_file)
-
-    # إعادة التشغيل (reload)
     await event.client.reload(zed)
