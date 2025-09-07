@@ -144,15 +144,15 @@ async def _(event):
         f"**⌔∮ يتـم الان اعـادة تشغيـل بـوت يمنثون  فـي السيـرفـر قـد يستغـرق الامـر 2-3 دقيقـه ▬▭ ...**",
     )
     if cmd == "كلين":
-    for file in exts:
-        removing = glob.glob(f"./*.{file}")
-        for i in removing:
-            os.remove(i)
-    for i in cmds:
-        await _zedutils.runcmd(i)
-    
+        for file in exts:
+            removing = glob.glob(f"./*.{file}")
+            for i in removing:
+                os.remove(i)
+        for i in cmds:
+            await _zedutils.runcmd(i)
+
     # حذف جلسة البوت لإعادة إنشاء جديدة
-    session_file = "SESION_REFZ_BOT.session"
+    session_file = "./SESION_REFZ_BOT.session"
     if os.path.exists(session_file):
         os.remove(session_file)
 
