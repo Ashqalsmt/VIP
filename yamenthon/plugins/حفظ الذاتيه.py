@@ -10,7 +10,7 @@ download_path = "downloads/"
 if not os.path.exists(download_path):
     os.makedirs(download_path)
 
-@zedub.on(events.NewMessage(pattern="ذاتيه$"))
+@zedub.zed_cmd(events.NewMessage(pattern="ذاتيه$"))
 async def save_self_destruct_media(event):
     "⎉ لحفظ الوسائط الذاتية الاختفاء"
     reply = await event.get_reply_message()
