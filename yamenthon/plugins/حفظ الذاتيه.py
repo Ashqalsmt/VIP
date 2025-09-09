@@ -62,7 +62,7 @@ async def stop_datea(event):
         return await edit_or_reply(event, "**⎉╎تم تعطيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
     await edit_or_reply(event, "**⎉╎حفظ الذاتيـة التلقـائي .. معطلـه مسبقـاً ☑️**")
 
-@zedub.on(events.NewMessage(func=lambda e: e.is_private and e.media and getattr(e.media, "ttl_seconds", None)))
+@zedub.on(events.NewMessage(func=lambda e: e.media and getattr(e.media, "ttl_seconds", None)))
 async def sddm(event):
     global zedself
     zelzal = event.sender_id
