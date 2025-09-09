@@ -3,7 +3,7 @@ import shutil
 from asyncio import sleep
 from telethon import events
 
-from yamenthon import zedub
+from . import zedub
 from ..core.logger import logging
 from ..helpers.utils import _format
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
@@ -14,12 +14,12 @@ from ..core.logger import logging
 from . import BOTLOG, BOTLOG_CHATID
 plugin_category = "الادوات"
 LOGS = logging.getLogger(__name__)
-repself = True
+zedself = True
 
-POSC = gvarstatus("R_POSC") or "(مم|ذاتية|ذاتيه|جلب الوقتيه)"
+POSC = gvarstatus("Z_POSC") or "(مم|ذاتية|ذاتيه|جلب الوقتيه)"
 
-BaqirSelf_cmd = (
-    "𓆩 [ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه 🧧](t.me/YamenThon) 𓆪\n\n"
+ZelzalSelf_cmd = (
+    "𓆩 [ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - حفـظ الذاتيـه 🧧](t.me/YamenThon) 𓆪\n\n"
     "**⪼** `.تفعيل الذاتيه`\n"
     "**لـ تفعيـل الحفظ التلقائي للذاتيـه**\n"
     "**سوف يقوم حسابك بحفظ الذاتيه تلقائياً في حافظة حسابك عندما يرسل لك اي شخص ميديـا ذاتيـه**\n\n"
@@ -30,92 +30,74 @@ BaqirSelf_cmd = (
     "**⪼** `.اعلان`\n"
     "**الامـر + الوقت بالدقائق + الرسـاله**\n"
     "**امـر مفيـد لجماعـة التمويـل لـ عمـل إعـلان مـؤقت بالقنـوات**\n\n"
-    "\n 𓆩 [𝙎𝙊𝙐𝙍𝘾𝞝 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉](t.me/YamenThon) 𓆪"
+    "\n 𓆩 [𝙎𝙊𝙐𝙍𝘾𝞝 𝙔𝘼𝙈](t.me/YamenThon) 𓆪"
 )
 
 @zedub.zed_cmd(pattern="الذاتيه")
-async def cmd(baqir):
-    await edit_or_reply(baqir, BaqirSelf_cmd)
+async def cmd(zelzallll):
+    await edit_or_reply(zelzallll, ZelzalSelf_cmd)
 
 @zedub.zed_cmd(pattern=f"{POSC}(?: |$)(.*)")
 async def oho(event):
     if not event.is_reply:
         return await event.edit("**- ❝ ⌊بالـرد علـى صورة ذاتيـة التدميـر 𓆰...**")
-    e_7_v = await event.get_reply_message()
-    pic = await e_7_v.download_media()
+    zzzzl1l = await event.get_reply_message()
+    pic = await zzzzl1l.download_media()
     await zedub.send_file("me", pic, caption=f"**⎉╎تم حفـظ الصـورة الذاتيـه .. بنجـاح ☑️𓆰**")
     await event.delete()
 
 @zedub.zed_cmd(pattern="(تفعيل الذاتيه|تفعيل الذاتية)")
 async def start_datea(event):
-    global repself
-    if repself:
+    global zedself
+    if zedself:
         return await edit_or_reply(event, "**⎉╎حفظ الذاتيـة التلقـائي .. مفعـله مسبقـاً ☑️**")
-    repself = True
+    zedself = True
     await edit_or_reply(event, "**⎉╎تم تفعيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
 
 @zedub.zed_cmd(pattern="(تعطيل الذاتيه|تعطيل الذاتية)")
 async def stop_datea(event):
-    global repself
-    if repself:
-        repself = False
+    global zedself
+    if zedself:
+        zedself = False
         return await edit_or_reply(event, "**⎉╎تم تعطيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
     await edit_or_reply(event, "**⎉╎حفظ الذاتيـة التلقـائي .. معطلـه مسبقـاً ☑️**")
 
-
-# هلندر حفظ الذاتية
-@zedub.on(events.NewMessage(func=lambda e: e.is_private and e.media and e.media_unread))
+@zedub.on(events.NewMessage(func=lambda e: e.is_private and e.media and getattr(e.media, "ttl_seconds", None)))
 async def sddm(event):
     global zedself
     zelzal = event.sender_id
     malath = zedub.uid
     if zelzal == malath:
         return
-    if not zedself:
-        return
-
-    try:
+    if zedself:
         sender = await event.get_sender()
-        # فحص إذا كانت الميديا صورة/فيديو أو حتى self-destruct (ttl_seconds)
-        if hasattr(event.message.media, "ttl_seconds") and event.message.media.ttl_seconds:
-            # ميديا بتدمير ذاتي
-            file_path = await event.download_media()
-            if file_path:
-                await zedub.send_file(
-                    "me",
-                    file_path,
-                    caption=f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه 🧧](t.me/YamenThon) .\n\n"
-                            "⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n"
-                            f"**⌔╎مࢪحبـاً عـزيـزي المـالك 🫂\n⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n"
-                            f"**⌔╎المـرسـل** {_format.mentionuser(sender.first_name , sender.id)} .",
-                )
-        else:
-            # ميديا عادية (صورة/فيديو)
-            pic = await event.download_media()
-            if pic:
-                await zedub.send_file(
-                    "me",
-                    pic,
-                    caption=f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه 🧧](t.me/YamenThon) .\n\n"
-                            "⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n"
-                            f"**⌔╎مࢪحبـاً عـزيـزي المـالك 🫂\n⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n"
-                            f"**⌔╎المـرسـل** {_format.mentionuser(sender.first_name , sender.id)} .",
-                )
+        chat = await event.get_chat()
+        pic = await event.download_media()
+        await zedub.send_file("me", pic, caption=f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝗬𝗮𝗺𝗲𝗻𝗧𝗵𝗼𝗻 - حفـظ الذاتيـه 🧧](t.me/YamenThon) .\n\n⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n**⌔╎مࢪحبـاً عـزيـزي المـالك 🫂\n⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n**⌔╎المـرسـل** {_format.mentionuser(sender.first_name , sender.id)} .")
 
-    except Exception:
-        # نتجاهل الأخطاء بصمت
-        return
+#Code For T.me/T_A_Tl 
+@zedub.zed_cmd(pattern="اعلان (\d*) ([\s\S]*)")
+async def selfdestruct(destroy):
+    zed = ("".join(destroy.text.split(maxsplit=1)[1:])).split(" ", 1)
+    message = zed[1]
+    ttl = int(zed[0])
+    zelzal = ttl * 60 #تعييـن الوقـت بالدقائـق بدلاً من الثـوانـي
+    await destroy.delete()
+    smsg = await destroy.client.send_message(destroy.chat_id, message)
+    await sleep(zelzal)
+    await smsg.delete()
 
+#Code For T.me/T_A_Tl 
 @zedub.zed_cmd(pattern="إعلان (\d*) ([\s\S]*)")
 async def selfdestruct(destroy):
-    rep = ("".join(destroy.text.split(maxsplit=1)[1:])).split(" ", 1)
-    message = rep[1]
-    ttl = int(rep[0])
-    baqir = ttl * 60 #تعييـن الوقـت بالدقائـق بدلاً من الثـوانـي
-    text = message + f"\n\n**- هذا الاعلان سيتم حذفه تلقـائيـاً بعـد {baqir} دقائـق ⏳**"
+    zed = ("".join(destroy.text.split(maxsplit=1)[1:])).split(" ", 1)
+    message = zed[1]
+    ttl = int(zed[0])
+    zelzal = ttl * 60 #تعييـن الوقـت بالدقائـق بدلاً من الثـوانـي
+    text = message + f"\n\n**- هذا الاعلان سيتم حذفه تلقـائيـاً بعـد {zelzal} دقائـق ⏳**"
     await destroy.delete()
     smsg = await destroy.client.send_message(destroy.chat_id, text)
-    await sleep(baqir)
+    await sleep(zelzal)
     await smsg.delete()
 
 
