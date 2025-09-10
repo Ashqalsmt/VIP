@@ -2,7 +2,7 @@ import os
 import tempfile
 import shutil
 from asyncio import sleep
-from telethon import events
+from telethon import events, types
 from jdatetime import datetime
 from pytz import timezone
 from argparse import ArgumentParser
@@ -52,15 +52,24 @@ async def cmd(baqir):
 async def oho(event):
     if not event.is_reply:
         return await event.edit("**- ❝ ⌊بالـرد علـى صورة ذاتيـة التدميـر 𓆰...**")
+    
     e_7_v = await event.get_reply_message()
-    pic = await e_7_v.download_media()
-    await zedub.send_file("me", pic, caption=f"**⎉╎تم حفـظ الصـورة الذاتيـه .. بنجـاح ☑️𓆰**")
-    await event.delete()
-    # تنظيف الملف المؤقت
+    if not (e_7_v.photo or e_7_v.video or (e_7_v.document and e_7_v.document.mime_type.startswith(('image', 'video')))):
+        return await event.edit("**- ❝ ⌊الرد يجب أن يكون على صورة أو فيديو 𓆰...**")
+    
     try:
-        os.remove(pic)
-    except:
-        pass
+        pic = await e_7_v.download_media()
+        await zedub.send_file("me", pic, caption=f"**⎉╎تم حفـظ الصـورة الذاتيـه .. بنجـاح ☑️𓆰**")
+        await event.delete()
+    except Exception as e:
+        await event.edit(f"**- ❝ ⌊خطأ في حفظ الذاتية: {e} 𓆰...**")
+    finally:
+        # تنظيف الملف المؤقت
+        try:
+            if pic and os.path.exists(pic):
+                os.remove(pic)
+        except:
+            pass
 
 @zedub.zed_cmd(pattern="(تفعيل الذاتيه|تفعيل الذاتية)")
 async def start_datea(event):
@@ -78,32 +87,33 @@ async def stop_datea(event):
         return await edit_or_reply(event, "**⎉╎تم تعطيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
     await edit_or_reply(event, "**⎉╎حفظ الذاتيـة التلقـائي .. معطلـه مسبقـاً ☑️**")
     
-#التلقائي
-@zedub.on(events.NewMessage(func=lambda e: e.is_private and (e.photo or e.video or e.document) and e.media_unread))
+# التلقائي - الطريقة الصحيحة لاكتشاف الذاتية
+@zedub.on(events.NewMessage(func=lambda e: e.is_private and (e.photo or e.video or (e.document and e.document.mime_type.startswith(('image', 'video'))))))
 async def sddm(event):
     global repself
     zelzal = event.sender_id
     malath = zedub.uid
+    
     # تجاهل الرسائل اللي أنت أرسلتهـا بنفس الحساب
     if zelzal == malath:
         return
+    
     # إذا الحفظ التلقائي معطل ما نكمل
     if not repself:
         return
 
     msg = event.message
-
-    # نتأكد أنها وسائط ذاتية التدمير (TTL)
-    if not (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds):
-        return
-
     tmp_path = None
+    
     try:
-        # تنزيل الملف إلى مسار مؤقت
-        tmp_path = tempfile.mktemp()
-        file_path = await event.download_media(file=tmp_path)
-        if not file_path:
-            LOGS.warning("download_media returned None for message %s", msg.id)
+        # إنشاء ملف مؤقت بشكل صحيح
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
+            tmp_path = tmp_file.name
+        
+        # تنزيل الملف
+        file_path = await msg.download_media(file=tmp_path)
+        if not file_path or not os.path.exists(file_path):
+            LOGS.warning("فشل في تنزيل الملف للرسالة %s", msg.id)
             return
 
         # بيانات المرسل/المحادثة
@@ -112,11 +122,11 @@ async def sddm(event):
         chat_title = getattr(chat, "title", getattr(chat, "first_name", "Unknown"))
         username = getattr(chat, "username", None)
 
-        # نعمل منشن آمن للمرسل باستخدام رابط tg://user?id=
+        # منشن آمن للمرسل
         sender_name = sender.first_name or "المُرسل"
         sender_mention = f'<a href="tg://user?id={sender.id}">{sender_name}</a>'
 
-        # تكست مشابه لكود Mr3rf1 (HTML)
+        # التكست
         caption = (
             f"┏ᑕᕼᗩT Iᗪ ⤳ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
             f"┣ᑌՏᗴᖇᑎᗩᗰᗴ ⤳ {'@' + username if username else '✗'}\n"
@@ -128,9 +138,9 @@ async def sddm(event):
             f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه 🧧](t.me/YamenThon)"
         )
 
-        # إرسال الملف إلى Saved Messages
+        # إرسال الملف إلى المحادثة الخاصة
         await zedub.send_file("me", file_path, caption=caption, parse_mode="html")
-        LOGS.info("Saved self-destructing media from %s (%s)", chat_title, zelzal)
+        LOGS.info("تم حفظ ذاتية من %s (%s)", chat_title, zelzal)
 
     except Exception as e:
         LOGS.exception("فشل حفظ الذاتيه الآلي: %s", e)
