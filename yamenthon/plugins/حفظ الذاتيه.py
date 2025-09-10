@@ -1,12 +1,20 @@
 import os
-import shutil
 import tempfile
-from datetime import datetime
-from pytz import timezone
+import shutil
 from asyncio import sleep
 from telethon import events
+from jdatetime import datetime
+from pytz import timezone
+from argparse import ArgumentParser
+from socks import SOCKS5
+from colorama import Fore
+import sqlite3
+import getpass
+import re
+
 
 from yamenthon import zedub
+from ..core.managers import edit_delete, edit_or_reply
 from ..core.logger import logging
 from ..helpers.utils import _format
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
@@ -38,7 +46,7 @@ BaqirSelf_cmd = (
 
 @zedub.zed_cmd(pattern="الذاتيه")
 async def cmd(baqir):
-    await baqir.edit(BaqirSelf_cmd)
+    await edit_or_reply(baqir, BaqirSelf_cmd)
 
 @zedub.zed_cmd(pattern=f"{POSC}(?: |$)(.*)")
 async def oho(event):
@@ -48,22 +56,27 @@ async def oho(event):
     pic = await e_7_v.download_media()
     await zedub.send_file("me", pic, caption=f"**⎉╎تم حفـظ الصـورة الذاتيـه .. بنجـاح ☑️𓆰**")
     await event.delete()
+    # تنظيف الملف المؤقت
+    try:
+        os.remove(pic)
+    except:
+        pass
 
 @zedub.zed_cmd(pattern="(تفعيل الذاتيه|تفعيل الذاتية)")
 async def start_datea(event):
     global repself
     if repself:
-        return await event.edit("**⎉╎حفظ الذاتيـة التلقـائي .. مفعـله مسبقـاً ☑️**")
+        return await edit_or_reply(event, "**⎉╎حفظ الذاتيـة التلقـائي .. مفعـله مسبقـاً ☑️**")
     repself = True
-    await event.edit("**⎉╎تم تفعيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
+    await edit_or_reply(event, "**⎉╎تم تفعيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
 
 @zedub.zed_cmd(pattern="(تعطيل الذاتيه|تعطيل الذاتية)")
 async def stop_datea(event):
     global repself
     if repself:
         repself = False
-        return await event.edit("**⎉╎تم تعطيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
-    await event.edit("**⎉╎حفظ الذاتيـة التلقـائي .. معطلـه مسبقـاً ☑️**")
+        return await edit_or_reply(event, "**⎉╎تم تعطيـل حفظ الذاتيـة التلقائـي .. بنجـاح ☑️**")
+    await edit_or_reply(event, "**⎉╎حفظ الذاتيـة التلقـائي .. معطلـه مسبقـاً ☑️**")
     
 #التلقائي
 @zedub.on(events.NewMessage(func=lambda e: e.is_private and (e.photo or e.video or e.document) and e.media_unread))
@@ -87,7 +100,7 @@ async def sddm(event):
     tmp_path = None
     try:
         # تنزيل الملف إلى مسار مؤقت
-        tmp_path = tempfile.NamedTemporaryFile(delete=False).name
+        tmp_path = tempfile.mktemp()
         file_path = await event.download_media(file=tmp_path)
         if not file_path:
             LOGS.warning("download_media returned None for message %s", msg.id)
