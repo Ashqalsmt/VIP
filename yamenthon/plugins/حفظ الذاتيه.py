@@ -104,7 +104,7 @@ async def sddm(event):
     msg = event.message
 
     # التحقق أن الوسائط ذاتية الاختفاء (بمؤقت أو عرض لمرة واحدة)
-    if not (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds is not None):
+    if event.message.media and hasattr(event.message.media, 'ttl_seconds') and event.message.media.ttl_seconds:
         return  # تجاهل إذا ما كانت ذاتية الاختفاء
 
     tmp_path = None
