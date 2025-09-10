@@ -91,15 +91,11 @@ async def stop_datea(event):
 @zedub.on(events.NewMessage(func=lambda e: e.is_private and e.media))
 async def sddm(event):
     global repself
-
     if event.sender_id == zedub.uid:
         return
-
     if not repself:
         return
-
     msg = event.message
-
     is_ttl = hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds
     is_view_once = getattr(msg.media, "spoiler", False) or (
         isinstance(msg.media, types.MessageMediaPhoto) and msg.media.photo and msg.media.photo.has_view_once
@@ -108,38 +104,25 @@ async def sddm(event):
             getattr(attr, "view_once", False) for attr in msg.media.document.attributes
         )
     )
-
     if not (is_ttl or is_view_once):
         return
-
     tmp_path = None
     try:
-        sender = await event.get_sender()
-        username = getattr(sender, 'username', None)
-        sender_mention = f"<a href='tg://user?id={sender.id}'>{sender.first_name}</a>"
-
         with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
             tmp_path = tmp_file.name
-
         file_path = await msg.download_media(file=tmp_path)
         if not file_path or not os.path.exists(file_path):
             return
-
-        await zedub.send_file(
-            "me",
-            file_path,
-            caption=(
-                f"┏ᑕᕼᗩT Iᗪ ⤳ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
-                f"┣ᑌՏᗴᖇᑎᗩᗰᗴ ⤳ {'@' + username if username else '✗'}\n"
-                f"┣ᑌՏՏᗴᘜᗴ Iᗪ ⤳ {msg.id}\n"
-                f"┣ᗪᗩTᗴ TIᗰᗴ ⤳ {datetime.now(timezone('Asia/Riyadh')).strftime('%Y/%m/%d %H:%M:%S')}\n"
-                f"┣ᗰᗴՏՏᗩᘜᗴ ⤳ {sender_mention}\n"
-                f"┗ @T_A_Tl \n"
-                f"عـزيـزي المـالك 🫂\n⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n\n"
-                f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه🧧](t.me/YamenThon)"
-            )
-        )
-
+        await zedub.send_file("me", file_path, caption=(
+            f"┏ᑕᕼᗩT Iᗪ ⤳ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
+            f"┣ᑌՏᗴᖇᑎᗰᗴ ⤳ {'@' + username if username else '✗'}\n"
+            f"┣ᗰᗴՏՏᗩᘜᗴ Iᗪ ⤳ {msg.id}\n"
+            f"┣ᗪᗩTᗴ TIᗰᗴ ⤳ {datetime.now(timezone('Asia/Riyadh')).strftime('%Y/%m/%d %H:%M:%S')}\n"
+            f"┣ᗰᗴՏՏᗩᘜᗴ ⤳ {sender_mention}\n"
+            f"┗ @T_A_Tl \n"
+            f"عـزيـزي المـالك 🫂\n⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n\n"
+            f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه🧧](t.me/YamenThon)"
+        ))
     except Exception as e:
         await zedub.send_message("me", f"⚠️ خطأ: {e}")
     finally:
