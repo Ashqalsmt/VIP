@@ -27,6 +27,7 @@ plugin_category = "الادوات"
 LOGS = logging.getLogger(__name__)
 repself = True
 
+
 POSC = gvarstatus("R_POSC") or "(مم|ذاتية|ذاتيه|جلب الوقتيه)"
 
 BaqirSelf_cmd = (
@@ -116,7 +117,16 @@ async def sddm(event):
         file_path = await msg.download_media(file=tmp_path)
         if not file_path or not os.path.exists(file_path):
             return
+        #بيانات المرسل
+        sender = await event.get_sender()
+        chat = await event.get_chat()
+        chat_title = getattr(chat, "title", getattr(chat, "first_name", "Unknown"))
+        username = getattr(chat, "username", None)
 
+        # نعمل منشن آمن للمرسل باستخدام رابط tg://user?id=
+        sender_name = sender.first_name or "المُرسل"
+        sender_mention = f'<a href="tg://user?id={sender.id}">{sender_name}</a>'
+        
         # إرسالها للمحفوظات
         await zedub.send_file("me", file_path, caption=(
             f"┏ᑕᕼᗩT Iᗪ ⤳ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
