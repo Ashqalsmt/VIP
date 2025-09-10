@@ -91,42 +91,37 @@ async def stop_datea(event):
 @zedub.on(events.NewMessage(func=lambda e: e.is_private and e.media))
 async def sddm(event):
     global repself
+
+    # تجاهل رسائلك أنت
     if event.sender_id == zedub.uid:
         return
+
+    # إذا الحفظ التلقائي معطل
     if not repself:
         return
 
     msg = event.message
 
-    # التحقق من نوع الذاتية
-    is_ttl = hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds
-    is_view_once = getattr(msg.media, "spoiler", False) or (
-        isinstance(msg.media, types.MessageMediaPhoto) and msg.media.photo and msg.media.photo.has_view_once
-    ) or (
-        isinstance(msg.media, types.MessageMediaDocument) and msg.media.document and any(
-            getattr(attr, "view_once", False) for attr in msg.media.document.attributes
-        )
-    )
+    # التحقق أن الوسائط ذاتية الاختفاء (بمؤقت أو عرض لمرة واحدة)
+    if not (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds is not None):
+        return  # تجاهل إذا ما كانت ذاتية الاختفاء
 
-    if not (is_ttl or is_view_once):
-        return
-
+    tmp_path = None
     try:
-        # الحصول على معلومات المرسل
-        sender = await event.get_sender()
-        username = sender.username if sender.username else None
-        sender_mention = f"<a href=\"tg://user?id={sender.id}\">{sender.first_name}</a>"
+        # إنشاء ملف مؤقت
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            tmp_path = tmp_file.name
 
-        # تنزيل الوسائط
-        file_path = await msg.download_media()
+        # تنزيل الملف
+        file_path = await msg.download_media(file=tmp_path)
         if not file_path or not os.path.exists(file_path):
             return
 
-        # ارسال للمحفوظات
+        # إرسالها للمحفوظات
         await zedub.send_file("me", file_path, caption=(
             f"┏ᑕᕼᗩT Iᗪ ⤳ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
-            f"┣ᑌՏᗴᖇᑎᗰᗴ ⤳ {'@' + username if username else '✗'}\n"
-            f"┣ᗰᗴՏՏᗩᘜᗴ Iᗪ ⤳ {msg.id}\n"
+            f"┣ᑌՏᗴᖇᑎᗩᗰᗴ ⤳ {'@' + username if username else '✗'}\n"
+            f"┣ᑌՏՏᗴᘜᗴ Iᗪ ⤳ {msg.id}\n"
             f"┣ᗪᗩTᗴ TIᗰᗴ ⤳ {datetime.now(timezone('Asia/Riyadh')).strftime('%Y/%m/%d %H:%M:%S')}\n"
             f"┣ᗰᗴՏՏᗩᘜᗴ ⤳ {sender_mention}\n"
             f"┗ @T_A_Tl \n"
@@ -136,3 +131,6 @@ async def sddm(event):
 
     except Exception as e:
         await zedub.send_message("me", f"⚠️ خطأ: {e}")
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            os.remove(tmp_path)
