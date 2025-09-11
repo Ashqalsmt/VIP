@@ -6,7 +6,7 @@ from telethon import functions
 from .Config import Config
 from .core.logger import logging
 from .core.session import zedub
-from .utils import mybot, saves, autoname
+from .utils import mybot, saves, autoname, autovars
 from .sql_helper.globals import addgvar, delgvar, gvarstatus
 from .utils import add_bot_to_logger_group, load_plugins, setup_bot, startupmessage, verifyLoggerGroup
 
@@ -17,6 +17,13 @@ print(yamenthon.__copyright__)
 print(f"المرخصة بموجب شروط  {yamenthon.__license__}")
 
 cmdhr = Config.COMMAND_HAND_LER
+
+try:
+    LOGS.info("⌭ جـارِ تحميـل الملحقـات ⌭")
+    zedub.loop.run_until_complete(autovars())
+    LOGS.info("✓ تـم تحميـل الملحقـات .. بنجـاح ✓")
+except Exception as e:
+    LOGS.error(f"- {e}")
 
 if gvarstatus("ALIVE_NAME") is None: #Code by T.me/T_A_Tl
     try:
