@@ -56,9 +56,9 @@ async def oho(event):
     
     T_A_Tl = await event.get_reply_message()
     if not (
-    (hasattr(T_A_Tl.media, "ttl_seconds") and T_A_Tl.media.ttl_seconds is not None) or
-    (hasattr(T_A_Tl, "media_unread") and T_A_Tl.media_unread) or
-    (hasattr(T_A_Tl, "ttl_period") and getattr(T_A_Tl, "ttl_period", None) is not None)
+        (hasattr(T_A_Tl.media, "ttl_seconds") and T_A_Tl.media.ttl_seconds is not None) or
+        (hasattr(T_A_Tl, "media_unread") and T_A_Tl.media_unread) or
+        (hasattr(T_A_Tl, "ttl_period") and getattr(T_A_Tl, "ttl_period", None) is not None)
 ):
     return await event.edit("**- ❝ ⌊الرد يجب أن يكون على صورة ذاتية (عرض لمرة أو مؤقتة) 𓆰...**")
     
