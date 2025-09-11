@@ -161,29 +161,30 @@ async def autovars():  # Code by T.me/T_A_Tl
         os.environ["TZ"] = zzztz
         LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
 
-async def autoname(): #Code by T.me/T_A_Tl
+async def autoname():  # Code by T.me/T_A_Tl
     if gvarstatus("ALIVE_NAME"):
-        return
-    await bot.start()
-    await asyncio.sleep(15)
-    LOGS.info("جـارِ اضافة فـار الاسـم التلقـائـي .. انتظـر قليـلاً")
-    baqir = await bot.get_me()
-    rrname = f"{baqir.first_name} {baqir.last_name}" if baqir.last_name else f"{baqir.first_name}"
+        rrname = gvarstatus("ALIVE_NAME")
+    else:
+        await bot.start()
+        await asyncio.sleep(15)
+        LOGS.info("جـارِ اضافة فـار الاسـم التلقـائـي .. انتظـر قليـلاً")
+        baqir = await bot.get_me()
+        rrname = f"{baqir.first_name} {baqir.last_name}" if baqir.last_name else f"{baqir.first_name}"
+        addgvar("ALIVE_NAME", rrname)
+        LOGS.info(f"تم اضافـة اسـم المستخـدم {rrname} .. بنجـاح")
+
     tz = Config.TZ
     tzDateTime = dt.now(timezone(tz))
     rdate = tzDateTime.strftime('%Y/%m/%d')
     militaryTime = tzDateTime.strftime('%H:%M')
     rtime = dt.strptime(militaryTime, "%H:%M").strftime("%I:%M %p")
-    rrd = f"‹ {rdate} ›"
-    rrt = f"‹ {rtime} ›"
-    if gvarstatus("r_date") is None:
-        rd = "r_date"
-        rt = "r_time"
-        rn = "ALIVE_NAME"
-        addgvar(rd, rrd)
-        addgvar(rt, rrt)
-        addgvar(rn, rrname)
-    LOGS.info(f"تم اضافـة اسـم المستخـدم {rrname} .. بنجـاح")
+
+    rrd = f"‹ {rdate} ›"
+    rrt = f"‹ {rtime} ›"
+
+    # تحديث التاريخ والوقت في كل تشغيل
+    addgvar("r_date", rrd)
+    addgvar("r_time", rrt)
 
 
 async def startupmessage():
