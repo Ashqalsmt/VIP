@@ -129,14 +129,15 @@ async def sddm(event):
         
         # إرسالها للمحفوظات
         await zedub.send_file("me", file_path, caption=(
-            f"┏ᑕᕼᗩT Iᗪ ⤳ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
-            f"┣ᑌՏᗴᖇᑎᗩᗰᗴ ⤳ {'@' + username if username else '✗'}\n"
-            f"┣ᑌՏՏᗴᘜᗴ Iᗪ ⤳ {msg.id}\n"
-            f"┣ᗪᗩTᗴ TIᗰᗴ ⤳ {datetime.now(timezone('Asia/Riyadh')).strftime('%Y/%m/%d %H:%M:%S')}\n"
-            f"┣ᗰᗴՏՏᗩᘜᗴ ⤳ {sender_mention}\n"
-            f"┗ @T_A_Tl \n"
-            f"عـزيـزي المـالك 🫂\n⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n\n"
-            f"[ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه🧧](t.me/YamenThon)"
+            f"""┏ᑕᕼᗩT Iᗪ ⤳ <a href="tg://user?id={event.chat_id}">{event.chat_id}</a>
+            ┣ᑌՏᗴᖇᑎᗩᗰᗴ ⤳ {'@' + username if username else '✗'}
+            ┣ᑌՏՏᗴᘜᗴ Iᗪ ⤳ {msg.id}
+            ┣ᗪᗩTᗴ TIᗰᗴ ⤳ {datetime.now(timezone('Asia/Riyadh')).strftime('%Y/%m/%d %H:%M:%S')}
+            ┣ᗰᗴՏՏᗩᘜᗴ ⤳ {sender_mention}
+            ┗ @T_A_Tl 
+            **عـزيـزي المـالك 🫂**
+            **⌔╎ تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️** ❝\n\n"
+            [ᯓ 𝗦𝗼𝘂𝗿𝗰𝗲 𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉 - حفـظ الذاتيـه🧧](t.me/YamenThon)"""
         ))
 
     except Exception as e:
