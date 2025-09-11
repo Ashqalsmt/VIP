@@ -108,12 +108,9 @@ async def sddm(event):
 # شرط يلتقط:
 # 1) وسائط لها مؤقت (ttl_seconds موجود وغير None)
 # 2) أو وسائط view-once (علامة media_unread أو غياب ttl مع وجود وسائط)
-if not (
-    (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds is not None)
-    or getattr(msg, "media_unread", False)
-    or (hasattr(msg, "ttl_period") and getattr(msg, "ttl_period", None) is not None)
-):
-    return
+    if not (
+        (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds is not None) or getattr(msg, "media_unread", False) or (hasattr(msg, "ttl_period") and getattr(msg, "ttl_period", None) is not None)):
+      return
 
     tmp_path = None
     try:
