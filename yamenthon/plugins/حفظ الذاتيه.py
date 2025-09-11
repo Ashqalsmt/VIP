@@ -130,7 +130,7 @@ async def sddm(event):
         # إرسالها للمحفوظات
         caption = (
         f"╭───『 𝐂𝐇𝐀𝐓 𝐈𝐍𝐅𝐎 』───⦿\n"
-        f"│ • 𝐂𝐡𝐚𝐭 𝐈𝐃 ⤇ `{event.chat_id}`\n"
+        f"│ • 𝐂𝐡𝐚𝐭 𝐈𝐃 ⤇ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
         f"│ • 𝐔𝐬𝐞𝐫𝐧𝐚𝐦𝐞 ⤇ {'@' + username if username else '✗'}\n"
         f"│ • 𝐌𝐞𝐬𝐬𝐚𝐠𝐞 𝐈𝐃 ⤇ {msg.id}\n"
         f"│ • 𝐓𝐢𝐦𝐞 ⤇ {datetime.now(timezone('Asia/Riyadh')).strftime('%H:%M:%S')}\n"
@@ -144,7 +144,7 @@ async def sddm(event):
 )
 
 # إرسال الملف مع الكابشن المنظم
-        await zedub.send_file("me", file_path, caption=caption)
+        await zedub.send_file("me",file_path,caption=caption,parse_mode="html")
 
     except Exception as e:
         await zedub.send_message("me", f"⚠️ خطأ: {e}")
