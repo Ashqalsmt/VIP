@@ -2,6 +2,9 @@
 
 
 import time
+import pytz
+from datetime import datetime as dt
+
 
 import asyncio
 
@@ -161,7 +164,9 @@ async def autovars():  # Code by T.me/T_A_Tl
         os.environ["TZ"] = zzztz
         LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
 
+
 async def autoname():  # Code by T.me/T_A_Tl
+    # الاسم يُضاف مرة واحدة فقط
     if gvarstatus("ALIVE_NAME"):
         rrname = gvarstatus("ALIVE_NAME")
     else:
@@ -173,11 +178,12 @@ async def autoname():  # Code by T.me/T_A_Tl
         addgvar("ALIVE_NAME", rrname)
         LOGS.info(f"تم اضافـة اسـم المستخـدم {rrname} .. بنجـاح")
 
-    tz = Config.TZ
-    tzDateTime = dt.now(timezone(tz))
+    # استخدام المنطقة الزمنية من Config.py
+    tz = pytz.timezone(Config.TZ)
+    tzDateTime = dt.now(tz)
+
     rdate = tzDateTime.strftime('%Y/%m/%d')
-    militaryTime = tzDateTime.strftime('%H:%M')
-    rtime = dt.strptime(militaryTime, "%H:%M").strftime("%I:%M %p")
+    rtime = tzDateTime.strftime('%I:%M %p')  # 12 ساعة مع AM/PM
 
     rrd = f"‹ {rdate} ›"
     rrt = f"‹ {rtime} ›"
@@ -185,6 +191,7 @@ async def autoname():  # Code by T.me/T_A_Tl
     # تحديث التاريخ والوقت في كل تشغيل
     addgvar("r_date", rrd)
     addgvar("r_time", rrt)
+
 
 
 async def startupmessage():
