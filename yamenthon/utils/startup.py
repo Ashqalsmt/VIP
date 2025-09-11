@@ -140,26 +140,26 @@ async def setup_bot():
 
         sys.exit()
 
-async def autovars(): #Code by T.me/T_A_Tl 
-    if "ENV" in heroku_var and "TZ" in heroku_var:
+
+async def autovars():  # Code by T.me/T_A_Tl
+    if "ENV" in os.environ and "TZ" in os.environ:
         return
-    if "ENV" in heroku_var and "TZ" not in heroku_var:
+    if "ENV" in os.environ and "TZ" not in os.environ:
         LOGS.info("جـارِ اضافـة بقيـة الفـارات .. تلقائيـاً")
         zzcom = "."
         zzztz = "Asia/Baghdad"
-        heroku_var["COMMAND_HAND_LER"] = zzcom
-        heroku_var["TZ"] = zzztz
+        os.environ["COMMAND_HAND_LER"] = zzcom
+        os.environ["TZ"] = zzztz
         LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
-    if "ENV" not in heroku_var and "TZ" not in heroku_var:
+    if "ENV" not in os.environ and "TZ" not in os.environ:
         LOGS.info("جـارِ اضافـة بقيـة الفـارات .. تلقائيـاً")
         zzenv = "ANYTHING"
         zzcom = "."
         zzztz = "Asia/Baghdad"
-        heroku_var["ENV"] = zzenv
-        heroku_var["COMMAND_HAND_LER"] = zzcom
-        heroku_var["TZ"] = zzztz
+        os.environ["ENV"] = zzenv
+        os.environ["COMMAND_HAND_LER"] = zzcom
+        os.environ["TZ"] = zzztz
         LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
-
 
 async def autoname(): #Code by T.me/T_A_Tl
     if gvarstatus("ALIVE_NAME"):
