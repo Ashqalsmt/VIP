@@ -104,13 +104,12 @@ async def sddm(event):
     msg = event.message
 
     # التحقق أن الوسائط ذاتية الاختفاء (بمؤقت أو عرض لمرة واحدة)
-    # التحقق أن الوسائط ذاتية الاختفاء (بمؤقت أو عرض لمرة واحدة)
-# شرط يلتقط:
-# 1) وسائط لها مؤقت (ttl_seconds موجود وغير None)
-# 2) أو وسائط view-once (علامة media_unread أو غياب ttl مع وجود وسائط)
     if not (
-        (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds is not None) or getattr(msg, "media_unread", False) or (hasattr(msg, "ttl_period") and getattr(msg, "ttl_period", None) is not None)):
-      return
+        (hasattr(msg.media, "ttl_seconds") and msg.media.ttl_seconds is not None) or 
+        getattr(msg, "media_unread", False) or 
+        (hasattr(msg, "ttl_period") and getattr(msg, "ttl_period", None) is not None)
+    ):
+        return
 
     tmp_path = None
     try:
@@ -134,22 +133,22 @@ async def sddm(event):
         
         # إرسالها للمحفوظات
         caption = (
-        f"╭───『 𝐂𝐇𝐀𝐓 𝐈𝐍𝐅𝐎 』───⦿\n"
-        f"│ • 𝐂𝐡𝐚𝐭 𝐈𝐃 ⤇ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
-        f"│ • 𝐔𝐬𝐞𝐫𝐧𝐚𝐦𝐞 ⤇ {'@' + username if username else '✗'}\n"
-        f"│ • 𝐌𝐞𝐬𝐬𝐚𝐠𝐞 𝐈𝐃 ⤇ {msg.id}\n"
-        f"│ • 𝐓𝐢𝐦𝐞 ⤇ {datetime.now(timezone('Asia/Riyadh')).strftime('%H:%M:%S')}\n"
-        f"│ • 𝐒𝐞𝐧𝐝𝐞𝐫 ⤇ {sender_mention}\n"
-        f"╰───────────────────⦿\n"
-        f"╭───『 𝐍𝐎𝐓𝐈𝐅𝐈𝐂𝐀𝐓𝐈𝐎𝐍 』─⦿\n"
-        f"│ **𝒀𝒂𝒎𝒆𝒏:عـزيـزي المـالك 🫂**\n"
-        f"│ **𝒀𝒂𝒎𝒆𝒏:تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️**\n"
-        f"╰───────────────────⦿\n\n"
-        f"⧉ • 𝐒𝐨𝐮𝐫𝐜𝐞 ⤇ <a href="https://t.me/YamenThon">𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉</a>
-)
+            f"╭───『 𝐂𝐇𝐀𝐓 𝐈𝐍𝐅𝐎 』───⦿\n"
+            f"│ • 𝐂𝐡𝐚𝐭 𝐈𝐃 ⤇ <a href=\"tg://user?id={event.chat_id}\">{event.chat_id}</a>\n"
+            f"│ • 𝐔𝐬𝐞𝐫𝐧𝐚𝐦𝐞 ⤇ {'@' + username if username else '✗'}\n"
+            f"│ • 𝐌𝐞𝐬𝐬𝐚𝐠𝐞 𝐈𝐃 ⤇ {msg.id}\n"
+            f"│ • 𝐓𝐢𝐦𝐞 ⤇ {datetime.now(timezone('Asia/Riyadh')).strftime('%H:%M:%S')}\n"
+            f"│ • 𝐒𝐞𝐧𝐝𝐞𝐫 ⤇ {sender_mention}\n"
+            f"╰───────────────────⦿\n"
+            f"╭───『 𝐍𝐎𝐓𝐈𝐅𝐈𝐂𝐀𝐓𝐈𝐎𝐍 』─⦿\n"
+            f"│ **𝒀𝒂𝒎𝒆𝒏:عـزيـزي المـالك 🫂**\n"
+            f"│ **𝒀𝒂𝒎𝒆𝒏:تـم حفـظ الذاتيـة تلقائيـاً .. بنجـاح ☑️**\n"
+            f"╰───────────────────⦿\n\n"
+            f"⧉ • 𝐒𝐨𝐮𝐫𝐜𝐞 ⤇ <a href=\"https://t.me/YamenThon\">𝙔𝘼𝙈𝙀𝙉𝙏𝙃𝙊𝙉</a>"
+        )
 
-# إرسال الملف مع الكابشن المنظم
-        await zedub.send_file("me",file_path,caption=caption,parse_mode="html")
+        # إرسال الملف مع الكابشن المنظم
+        await zedub.send_file("me", file_path, caption=caption, parse_mode="html")
 
     except Exception as e:
         await zedub.send_message("me", f"⚠️ خطأ: {e}")
