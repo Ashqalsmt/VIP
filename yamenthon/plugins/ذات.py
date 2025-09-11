@@ -49,6 +49,7 @@ BaqirSelf_cmd = (
 async def cmd(baqir):
     await edit_or_reply(baqir, BaqirSelf_cmd)
 
+
 @zedub.zed_cmd(pattern=f"{POSC}(?: |$)(.*)")
 async def oho(event):
     if not event.is_reply:
@@ -59,8 +60,8 @@ async def oho(event):
         (hasattr(T_A_Tl.media, "ttl_seconds") and T_A_Tl.media.ttl_seconds is not None) or
         (hasattr(T_A_Tl, "media_unread") and T_A_Tl.media_unread) or
         (hasattr(T_A_Tl, "ttl_period") and getattr(T_A_Tl, "ttl_period", None) is not None)
-):
-    return await event.edit("**- ❝ ⌊الرد يجب أن يكون على صورة ذاتية (عرض لمرة أو مؤقتة) 𓆰...**")
+    ):
+        return await event.edit("**- ❝ ⌊الرد يجب أن يكون على صورة ذاتية (عرض لمرة أو مؤقتة) 𓆰...**")
     
     try:
         pic = await T_A_Tl.download_media()
@@ -69,7 +70,6 @@ async def oho(event):
     except Exception as e:
         await event.edit(f"**- ❝ ⌊خطأ في حفظ الذاتية: {e} 𓆰...**")
     finally:
-        # تنظيف الملف المؤقت
         try:
             if pic and os.path.exists(pic):
                 os.remove(pic)
