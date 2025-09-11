@@ -140,6 +140,26 @@ async def setup_bot():
 
         sys.exit()
 
+async def autovars(): #Code by T.me/T_A_Tl 
+    if "ENV" in heroku_var and "TZ" in heroku_var:
+        return
+    if "ENV" in heroku_var and "TZ" not in heroku_var:
+        LOGS.info("جـارِ اضافـة بقيـة الفـارات .. تلقائيـاً")
+        zzcom = "."
+        zzztz = "Asia/Baghdad"
+        heroku_var["COMMAND_HAND_LER"] = zzcom
+        heroku_var["TZ"] = zzztz
+        LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
+    if "ENV" not in heroku_var and "TZ" not in heroku_var:
+        LOGS.info("جـارِ اضافـة بقيـة الفـارات .. تلقائيـاً")
+        zzenv = "ANYTHING"
+        zzcom = "."
+        zzztz = "Asia/Baghdad"
+        heroku_var["ENV"] = zzenv
+        heroku_var["COMMAND_HAND_LER"] = zzcom
+        heroku_var["TZ"] = zzztz
+        LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
+
 
 async def autoname(): #Code by T.me/T_A_Tl
     if gvarstatus("ALIVE_NAME"):
@@ -284,25 +304,25 @@ async def mybot():
             await asyncio.sleep(1)
             await bot.send_message("@BotFather", botname)
             await asyncio.sleep(1)
-            await bot.send_message("@BotFather", f"مسـاعـد - {bot.me.first_name} ")
+            await bot.send_message("@BotFather", f"البوت المسـاعـد يمنثون ")
             await asyncio.sleep(3)
-            #await bot.send_message("@BotFather", "/setuserpic")
-            #await asyncio.sleep(1)
-            #await bot.send_message("@BotFather", botname)
-            #await asyncio.sleep(1)
-            #await bot.send_file("@BotFather", "yamenthon/resources/Yemen2.jpg")
-            #await asyncio.sleep(3)
-            #await bot.send_message("@BotFather", "/setabouttext")
-            #await asyncio.sleep(1)
-            #await bot.send_message("@BotFather", botname)
-            #await asyncio.sleep(1)
-            #await bot.send_message("@BotFather", f"- بـوت يمنثون المسـاعـد 🤴🦾 الخـاص بـ  {bot.me.first_name} ")
-            #await asyncio.sleep(3)
-            #await bot.send_message("@BotFather", "/setdescription")
-            #await asyncio.sleep(1)
-            #await bot.send_message("@BotFather", botname)
-            #await asyncio.sleep(1)
-            #await bot.send_message("@BotFather", f"•⎆┊انـا البــوت المسـاعـد الخــاص بـ {zel_zal} \n•⎆┊بـواسطـتـي يمكـنك التواصــل مـع مـالكـي ♥️\n•⎆┊قنـاة السـورس 🎗 @YamenThon 🌐")
+            await bot.send_message("@BotFather", "/setuserpic")
+            await asyncio.sleep(1)
+            await bot.send_message("@BotFather", botname)
+            await asyncio.sleep(1)
+            await bot.send_file("@BotFather", "yamenthon/resources/Yemen2.jpg")
+            await asyncio.sleep(3)
+            await bot.send_message("@BotFather", "/setabouttext")
+            await asyncio.sleep(1)
+            await bot.send_message("@BotFather", botname)
+            await asyncio.sleep(1)
+            await bot.send_message("@BotFather", f"《البوت المساعد من سورس يـــمنثون| قناة السورس @YamenThon | مطور السورس @T_A_Tl 》 ")
+            await asyncio.sleep(3)
+            await bot.send_message("@BotFather", "/setdescription")
+            await asyncio.sleep(1)
+            await bot.send_message("@BotFather", botname)
+            await asyncio.sleep(1)
+            await bot.send_message("@BotFather", f"•⎆┊انـا البــوت المسـاعـد الخــاص بـ {zel_zal} \n•⎆┊بـواسطـتـي يمكـنك التواصــل مـع مـالكـي ♥️\n•⎆┊قنـاة السـورس 🎗 @YamenThon 🌐")
         except Exception as e:
             print(e)
 
